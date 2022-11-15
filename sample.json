@@ -1,0 +1,22 @@
+[
+    {
+        "firstName": "abi",
+        "lastName": "son",
+        "gender": "female",
+        "age": 18,
+        "address": {
+            "streetAddress": "901",
+            "city": "Sano",
+            "state": "TN"
+        },
+        "phoneNumbers": [
+            {
+                "type": "home",
+                "number": "8254859647"
+            }
+        ]
+    },
+    {
+        "Id_number": "ID5996656"
+    }
+]
