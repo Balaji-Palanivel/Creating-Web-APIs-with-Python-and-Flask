@@ -4,27 +4,47 @@ from flask import jsonify,request
 from bson.json_util import dumps, loads
 import json
 
+
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://127.0.0.1:27017/database_1"
 mongo = PyMongo(app)
 all_users = mongo.db.collection_3
 
+
 @app.route("/",methods=['GET'])
+def get_details():    
+    arg1 = (request.args.get('filter'))
+    if len(request.args.keys()) == 0:
+        return home_page()
+    elif 'filter' in request.args.keys():
+       return filter(str(arg1))
+    elif request.args.get('sort') == "asc":
+        return sort_Asc()
+    elif request.args.get('sort') == "dsc":
+        return sort_Dsc()
+        
+    
 def home_page():
     x = all_users.find()
     y = dumps(x) 
     authors = json.loads(y)
-    return authors
+    return authors    
 
-@app.route("/sortbyasc",methods=['GET'])
 def sort_Asc():
     x = all_users.find().sort("name",1)
     y = dumps(x) 
     authors = json.loads(y)
+    print("Sort Asc called..........")
     return authors
 
-@app.route("/<string:name>",methods=['GET'])
-def find(name):
+def sort_Dsc():
+    x = all_users.find().sort("name",-1)
+    y = dumps(x) 
+    authors = json.loads(y)
+    print("Sort Dsc called..........")
+    return authors
+
+def filter(name):
     x = all_users.find()
     y = dumps(list(x), indent = 2) 
     authors = json.loads(y)
@@ -34,7 +54,12 @@ def find(name):
             z.append(x)
     a = dumps(z, indent = 2) 
     b = json.loads(a)
-    return b
+    print("Filter fun  called..........")
+    if request.args.get('sort') == 'asc':
+      return (sorted(b, key=lambda i: (i['name']),reverse=False))
+    elif request.args.get('sort') == 'dsc':
+       return (sorted(b, key=lambda i: (i['name']),reverse=True))
+    
 
 @app.route("/add",methods=['POST'])
 def find_id():
@@ -51,6 +76,7 @@ def find_id():
 
 app.run(debug= True)
 
+   
 
 # import pymongo
 # from pymongo import MongoClient
